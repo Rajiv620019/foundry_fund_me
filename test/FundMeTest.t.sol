@@ -15,4 +15,10 @@ contract FundMeTest is Test {
     function testMinUSD() public {
         assertEq(fundMe.MINIMUM_USD(), 5e18);
     }
+
+    // Testing price feed version
+    function testPriceFeedVersion() public {
+        uint256 version = fundMe.getVersion();
+        assertEq(version, 4);
+    }
 }
