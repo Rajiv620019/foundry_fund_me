@@ -43,12 +43,28 @@ contract FundMeTest is Test {
         fundMe.fund();
     }
 
-    // Test funded address
-    function testFundedAddressDataStructure() public {
+    modifier fundedAmount() {
         vm.prank(USER);
         fundMe.fund{value: AMOUNT}();
+        _;
+    }
 
+    // Test funded address
+    function testFundedAddressDataStructure() public fundedAmount {
         uint256 amountFunded = fundMe.getAddressToAmount(USER);
         assertEq(amountFunded, AMOUNT);
+    }
+
+    // Test funders to array of funders
+    function testFundersToArrayOfFunders() public fundedAmount {
+        address funder = fundMe.getFunder(0);
+        assertEq(funder, USER);
+    }
+
+    // Only owner can withdraw
+    function testOnlyOwnerCanWithdraw() public fundedAmount {
+        vm.prank(USER);
+        vm.expectRevert();
+        fundMe.withdraw();
     }
 }
